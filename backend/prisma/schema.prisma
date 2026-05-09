@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum Role {
+  EMPLOYEE
+  MANAGER
+  FINANCIAL
+  ADMIN
+}
+
+enum ReimbursementStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  PAID
+  CANCELED
+}
+
+enum HistoryAction {
+  CREATED
+  UPDATED
+  SUBMITTED
+  APPROVED
+  REJECTED
+  PAID
+  CANCELED
+  ATTACHMENT_ADDED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reimbursements Reimbursement[]
+  histories      ReimbursementHistory[]
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reimbursements Reimbursement[]
+}
+
+model Reimbursement {
+  id              String              @id @default(uuid())
+  description     String
+  amount          Float
+  expenseDate     DateTime
+  status          ReimbursementStatus @default(DRAFT)
+  rejectionReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+
+  attachments Attachment[]
+  histories   ReimbursementHistory[]
+}
+
+model Attachment {
+  id        String   @id @default(uuid())
+  fileName  String
+  fileUrl   String
+  fileType  String
+  createdAt DateTime @default(now())
+
+  reimbursement   Reimbursement @relation(fields: [reimbursementId], references: [id])
+  reimbursementId String
+}
+
+model ReimbursementHistory {
+  id        String        @id @default(uuid())
+  action    HistoryAction
+  note      String?
+  createdAt DateTime      @default(now())
+
+  reimbursement   Reimbursement @relation(fields: [reimbursementId], references: [id])
+  reimbursementId String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+}

@@ -1,0 +1,940 @@
+{
+  "info": {
+    "_postman_id": "116e6d19-5191-44db-b510-1d72775b038e",
+    "name": "Pitang-estagio-API",
+    "description": "Collection da API do Sistema de Controle de Reembolsos da Pitang. Reúne os testes manuais das principais rotas do backend, incluindo cadastro e login de usuários, gerenciamento de categorias, criação de reembolsos, anexos simulados, envio para aprovação, aprovação pelo gestor, pagamento pelo financeiro e consulta de histórico. Também contém cenários negativos para validar autenticação, permissões, regras de negócio e tratamento adequado de erros HTTP.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54454946",
+    "_collection_link": "https://go.postman.co/collection/54454946-116e6d19-5191-44db-b510-1d72775b038e?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Negative Tests",
+      "item": [
+        {
+          "name": "Approve Reimbursement as Employee - Forbidden",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NmExODhlMC0xODllLTQxNDQtOGI4Mi02NGY0MjVjMDc5YjMiLCJyb2xlIjoiRU1QTE9ZRUUiLCJpYXQiOjE3NzgyNzg0NTMsImV4cCI6MTc3ODM2NDg1M30.jLyEb4gkUiK5wQMF1RCDW2pLhkoERW4NkPyP7eULNNw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/reimbursements/9b9cfd5b-4880-497d-a63a-d7f8aac47dad/approve",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "reimbursements",
+                "9b9cfd5b-4880-497d-a63a-d7f8aac47dad",
+                "approve"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Category as Employee - Forbidden",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NmExODhlMC0xODllLTQxNDQtOGI4Mi02NGY0MjVjMDc5YjMiLCJyb2xlIjoiRU1QTE9ZRUUiLCJpYXQiOjE3NzgyNzg0NTMsImV4cCI6MTc3ODM2NDg1M30.jLyEb4gkUiK5wQMF1RCDW2pLhkoERW4NkPyP7eULNNw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Categoria proibida\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/categories",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Reimbursement for Submitted Payment Test",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NmExODhlMC0xODllLTQxNDQtOGI4Mi02NGY0MjVjMDc5YjMiLCJyb2xlIjoiRU1QTE9ZRUUiLCJpYXQiOjE3NzgyNzg0NTMsImV4cCI6MTc3ODM2NDg1M30.jLyEb4gkUiK5wQMF1RCDW2pLhkoERW4NkPyP7eULNNw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"description\": \"Refeição com gerente\",\r\n  \"amount\": 30,\r\n  \"expenseDate\": \"2026-05-08\",\r\n  \"categoryId\": \"9c7c31eb-e404-4415-9ab5-77e6c53d813d\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/reimbursements",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "reimbursements"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Submit Reimbursement for Payment Tes",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NmExODhlMC0xODllLTQxNDQtOGI4Mi02NGY0MjVjMDc5YjMiLCJyb2xlIjoiRU1QTE9ZRUUiLCJpYXQiOjE3NzgyNzg0NTMsImV4cCI6MTc3ODM2NDg1M30.jLyEb4gkUiK5wQMF1RCDW2pLhkoERW4NkPyP7eULNNw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/reimbursements/3a4d8acf-ffa2-4066-967a-3ba743d4a083/submit",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "reimbursements",
+                "3a4d8acf-ffa2-4066-967a-3ba743d4a083",
+                "submit"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Pay Submitted Reimbursement - 400",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMzc3MDE5NS1hYzViLTQwZTUtYWY3Ni1kNjY5Y2I0NGE4ZTMiLCJyb2xlIjoiRklOQU5DSUFMIiwiaWF0IjoxNzc4MjgyMzM0LCJleHAiOjE3NzgzNjg3MzR9.hKhxmY2F_bsGreQTks1Q-5oHStn7Wt1J_0-VlyRNCkA",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/reimbursements/3a4d8acf-ffa2-4066-967a-3ba743d4a083/pay",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "reimbursements",
+                "3a4d8acf-ffa2-4066-967a-3ba743d4a083",
+                "pay"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Attachment After Submit - 400",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NmExODhlMC0xODllLTQxNDQtOGI4Mi02NGY0MjVjMDc5YjMiLCJyb2xlIjoiRU1QTE9ZRUUiLCJpYXQiOjE3NzgyODI4MzYsImV4cCI6MTc3ODM2OTIzNn0.aI0F6ft5TG86tVRb4LFF-2G8JvRWS_1_j8eSQq6pd3E",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"fileName\": \"late-receipt.pdf\",\r\n  \"fileUrl\": \"https://example.com/late-receipt.pdf\",\r\n  \"fileType\": \"PDF\"\r\n}\r\n"
+            },
+            "url": {
+              "raw": "http://localhost:3000/reimbursements/3a4d8acf-ffa2-4066-967a-3ba743d4a083/attachments",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "reimbursements",
+                "3a4d8acf-ffa2-4066-967a-3ba743d4a083",
+                "attachments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Reimbursement Without Token - 401",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"fileName\": \"late-receipt.pdf\",\r\n  \"fileUrl\": \"https://example.com/late-receipt.pdf\",\r\n  \"fileType\": \"PDF\"\r\n}\r\n"
+            },
+            "url": {
+              "raw": "http://localhost:3000/reimbursements/3a4d8acf-ffa2-4066-967a-3ba743d4a083",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "reimbursements",
+                "3a4d8acf-ffa2-4066-967a-3ba743d4a083"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Nonexistent Reimbursement - 404",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NmExODhlMC0xODllLTQxNDQtOGI4Mi02NGY0MjVjMDc5YjMiLCJyb2xlIjoiRU1QTE9ZRUUiLCJpYXQiOjE3NzgyODI4MzYsImV4cCI6MTc3ODM2OTIzNn0.aI0F6ft5TG86tVRb4LFF-2G8JvRWS_1_j8eSQq6pd3E",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"fileName\": \"late-receipt.pdf\",\r\n  \"fileUrl\": \"https://example.com/late-receipt.pdf\",\r\n  \"fileType\": \"PDF\"\r\n}\r\n"
+            },
+            "url": {
+              "raw": "http://localhost:3000/reimbursements/1111111-1111-1111-1111-111111111111",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "reimbursements",
+                "1111111-1111-1111-1111-111111111111"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reject Without Reason - 400",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZTI3NDRlNS05MWJmLTQ0MmQtYjVkNi1kZThmYTJjNzk3NDkiLCJyb2xlIjoiTUFOQUdFUiIsImlhdCI6MTc3ODI4MzUxNCwiZXhwIjoxNzc4MzY5OTE0fQ.Py4DaTdgz6o5NSnvjRMcNqf42E3PkrV87dS1nI1WPcc",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/reimbursements/3a4d8acf-ffa2-4066-967a-3ba743d4a083/reject",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "reimbursements",
+                "3a4d8acf-ffa2-4066-967a-3ba743d4a083",
+                "reject"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Reimbursement for Invalid Attachment Test",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NmExODhlMC0xODllLTQxNDQtOGI4Mi02NGY0MjVjMDc5YjMiLCJyb2xlIjoiRU1QTE9ZRUUiLCJpYXQiOjE3NzgyODM3MjUsImV4cCI6MTc3ODM3MDEyNX0.nmQw0k0PWvBYei8WMdHNpBPiwwP67YG8b2rblu6L1c4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"description\": \"Encomenda do lanche na reunião\",\r\n  \"amount\": 30,\r\n  \"expenseDate\": \"2026-05-08\",\r\n  \"categoryId\": \"f193b9d9-d9d0-43f5-abce-f84bfbdafe30\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/reimbursements",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "reimbursements"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Attachment Type - 400",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NmExODhlMC0xODllLTQxNDQtOGI4Mi02NGY0MjVjMDc5YjMiLCJyb2xlIjoiRU1QTE9ZRUUiLCJpYXQiOjE3NzgyODM3MjUsImV4cCI6MTc3ODM3MDEyNX0.nmQw0k0PWvBYei8WMdHNpBPiwwP67YG8b2rblu6L1c4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"fileName\": \"recibo.docx\",\r\n  \"fileUrl\": \"https://example.com/recibo.docx\",\r\n  \"fileType\": \"DOCX\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/reimbursements/750bf1cd-7ea8-4410-9f3f-3fc5de4ea6a5/attachments",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "reimbursements",
+                "750bf1cd-7ea8-4410-9f3f-3fc5de4ea6a5",
+                "attachments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create User With Duplicated Email - 409",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Outro Admin\",\r\n  \"email\": \"admin@email.com\",\r\n  \"password\": \"123456\",\r\n  \"role\": \"ADMIN\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login With Wrong Password - 401",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"admin@email.com\",\r\n  \"password\": \"senhaerrada\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "Contém cenários de erro da API usados para validar se o sistema bloqueia ações inválidas corretamente. Os testes verificam permissões por perfil, autenticação obrigatória, transições de status inválidas, dados inválidos, recursos inexistentes, e-mails duplicados e demais respostas esperadas como 400, 401, 403, 404 e 409."
+    },
+    {
+      "name": "Positive Tests",
+      "item": [
+        {
+          "name": "Login Admin",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"admin@email.com\",\r\n  \"password\": \"123456\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Admin",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Admin\",\r\n  \"email\": \"admin@email.com\",\r\n  \"password\": \"123456\",\r\n  \"role\": \"ADMIN\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Categories",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkOWUyMzYzMi1lY2JmLTQ4MGQtOWMyMC1kNDI3MWNkNDE1MDYiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzgyNjYwODUsImV4cCI6MTc3ODM1MjQ4NX0.eq9LwQspZYbpkRQIYfKAaOO2muSz2j4j5nOfA96fqW0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Alimentação\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/categories",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Employee",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"João\",\r\n  \"email\": \"joao@email.com\",\r\n  \"password\": \"123456\",\r\n  \"role\": \"EMPLOYEE\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Employee",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"joao@email.com\",\r\n  \"password\": \"123456\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Reimbursements",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NmExODhlMC0xODllLTQxNDQtOGI4Mi02NGY0MjVjMDc5YjMiLCJyb2xlIjoiRU1QTE9ZRUUiLCJpYXQiOjE3NzgyNjY5OTIsImV4cCI6MTc3ODM1MzM5Mn0.jOwxNw0QZ7C2DsYFVtTgg7fcCyfMXOCFHQJDEZQdJ2M",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"description\": \"Almoço com cliente durante reunião comercial\",\r\n  \"amount\": 45.9,\r\n  \"expenseDate\": \"2026-05-08\",\r\n  \"categoryId\": \"f8d26076-e1f7-43ba-ba4c-6b3f0713da14\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/reimbursements",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "reimbursements"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Attachment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NmExODhlMC0xODllLTQxNDQtOGI4Mi02NGY0MjVjMDc5YjMiLCJyb2xlIjoiRU1QTE9ZRUUiLCJpYXQiOjE3NzgyNjc5MjIsImV4cCI6MTc3ODM1NDMyMn0.vnFCg_iT8Oj8r6pI6KTdJAWqT7_sKkGI3EQtIDmCtgY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"fileName\": \"recibo-almoco.pdf\",\r\n  \"fileUrl\": \"https://example.com/recibo-almoco.pdf\",\r\n  \"fileType\": \"PDF\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/reimbursements/9b9cfd5b-4880-497d-a63a-d7f8aac47dad/attachments",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "reimbursements",
+                "9b9cfd5b-4880-497d-a63a-d7f8aac47dad",
+                "attachments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Manager",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Gestor\",\r\n  \"email\": \"gestor@email.com\",\r\n  \"password\": \"123456\",\r\n  \"role\": \"MANAGER\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Submit Reimbursements",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NmExODhlMC0xODllLTQxNDQtOGI4Mi02NGY0MjVjMDc5YjMiLCJyb2xlIjoiRU1QTE9ZRUUiLCJpYXQiOjE3NzgyNjg5NDAsImV4cCI6MTc3ODM1NTM0MH0.FQstDKHOvgy6Z7U-64kgFrresUcHHx2w4DakjpKev5w",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/reimbursements/9b9cfd5b-4880-497d-a63a-d7f8aac47dad/submit",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "reimbursements",
+                "9b9cfd5b-4880-497d-a63a-d7f8aac47dad",
+                "submit"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Manager",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"gestor@email.com\",\r\n  \"password\": \"123456\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Financial",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Financeiro\",\r\n  \"email\": \"financeiro@email.com\",\r\n  \"password\": \"123456\",\r\n  \"role\": \"FINANCIAL\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Financial",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"financeiro@email.com\",\r\n  \"password\": \"123456\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Pay Reimbursements",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMzc3MDE5NS1hYzViLTQwZTUtYWY3Ni1kNjY5Y2I0NGE4ZTMiLCJyb2xlIjoiRklOQU5DSUFMIiwiaWF0IjoxNzc4MjY5NTI1LCJleHAiOjE3NzgzNTU5MjV9.cb3VjUEKd4AEigT4-Kx44MvYEjhK47unERP9KispaVg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/reimbursements/9b9cfd5b-4880-497d-a63a-d7f8aac47dad/pay",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "reimbursements",
+                "9b9cfd5b-4880-497d-a63a-d7f8aac47dad",
+                "pay"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Reimbursement History",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMzc3MDE5NS1hYzViLTQwZTUtYWY3Ni1kNjY5Y2I0NGE4ZTMiLCJyb2xlIjoiRklOQU5DSUFMIiwiaWF0IjoxNzc4MjY5NTI1LCJleHAiOjE3NzgzNTU5MjV9.cb3VjUEKd4AEigT4-Kx44MvYEjhK47unERP9KispaVg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/reimbursements/9b9cfd5b-4880-497d-a63a-d7f8aac47dad/history",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "reimbursements",
+                "9b9cfd5b-4880-497d-a63a-d7f8aac47dad",
+                "history"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "Contém as requisições do fluxo principal da API, simulando o uso correto do sistema: criação de usuários, login, cadastro de categoria, criação de reembolso, adição de anexo, envio para aprovação, aprovação pelo gestor e pagamento pelo financeiro. Essas requisições representam o caminho esperado quando todas as regras de negócio são respeitadas."
+    }
+  ]
+}
