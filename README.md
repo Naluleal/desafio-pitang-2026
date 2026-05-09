@@ -1,6 +1,31 @@
 # Sistema de Controle de Reembolsos - Pitang
 
-Aplicação full stack desenvolvida para o desafio de estágio da Pitang. O sistema permite cadastrar usuários, autenticar por perfil, gerenciar categorias e controlar solicitações de reembolso com aprovação, rejeição, pagamento, anexos simulados e histórico de ações.
+Aplicação full stack desenvolvida para o desafio de estágio da Pitang. O projeto simula um sistema interno de controle de reembolsos, onde colaboradores podem cadastrar despesas, gestores podem aprovar ou rejeitar solicitações e o setor financeiro pode marcar reembolsos aprovados como pagos.
+
+O objetivo principal do projeto é demonstrar organização de código, criação de API REST, autenticação, autorização por perfil, validação de dados, persistência com banco de dados, interface web e testes da API.
+
+## Visão Geral
+
+O sistema é dividido em duas aplicações:
+
+| Parte | Descrição |
+| --- | --- |
+| `backend` | API REST responsável pelas regras de negócio, autenticação, banco de dados e testes |
+| `frontend` | Interface web usada para login, cadastro, categorias e fluxo de reembolsos |
+
+O backend roda em:
+
+```txt
+http://localhost:3000
+```
+
+O frontend roda com Vite, normalmente em:
+
+```txt
+http://localhost:5173
+```
+
+Se a porta `5173` estiver ocupada, o Vite pode iniciar em outra porta, como `5174` ou `5175`.
 
 ## Tecnologias
 
@@ -29,31 +54,37 @@ Aplicação full stack desenvolvida para o desafio de estágio da Pitang. O sist
 
 ## Funcionalidades
 
-- Cadastro e login de usuários.
-- Autenticação com JWT.
+- Cadastro de usuários.
+- Login com geração de token JWT.
 - Controle de acesso por perfil.
 - CRUD de categorias.
-- CRUD de solicitações de reembolso.
+- Criação, edição, listagem e detalhamento de reembolsos.
 - Envio de reembolso para aprovação.
 - Aprovação e rejeição por gestor.
-- Pagamento por financeiro.
-- Cancelamento de rascunho.
-- Anexos simulados.
-- Histórico/auditoria de ações.
-- Tratamento padronizado de erros HTTP.
+- Pagamento por usuário financeiro.
+- Cancelamento de reembolso em rascunho.
+- Anexos simulados para comprovantes.
+- Histórico de ações do reembolso.
+- Tratamento padronizado de erros.
 - Testes automatizados de integração no backend.
-- Collection do Postman para testes manuais da API.
+- Collection do Postman com testes manuais da API.
 
-## Perfis
+## Perfis do Sistema
+
+O sistema possui quatro perfis. Cada perfil tem permissões diferentes dentro do fluxo.
 
 | Perfil | Permissões principais |
 | --- | --- |
 | `ADMIN` | Gerencia categorias, lista usuários e visualiza reembolsos |
-| `EMPLOYEE` | Cria, edita, envia, cancela e acompanha seus reembolsos |
+| `EMPLOYEE` | Cria, edita, envia, cancela e acompanha seus próprios reembolsos |
 | `MANAGER` | Aprova ou rejeita reembolsos enviados |
 | `FINANCIAL` | Marca reembolsos aprovados como pagos |
 
+Essa separação é feita no backend por meio de autenticação JWT e middlewares de autorização.
+
 ## Fluxo de Reembolso
+
+Um reembolso passa por estados definidos. Esses estados controlam quais ações são permitidas em cada momento.
 
 ```txt
 DRAFT -> SUBMITTED -> APPROVED -> PAID
@@ -65,13 +96,13 @@ DRAFT -> SUBMITTED -> APPROVED -> PAID
 
 Regras principais:
 
-- Reembolso nasce como `DRAFT`.
-- Apenas o colaborador dono pode editar, cancelar, anexar comprovantes ou enviar um rascunho.
-- Apenas gestor pode aprovar ou rejeitar um reembolso `SUBMITTED`.
-- Apenas financeiro pode pagar um reembolso `APPROVED`.
-- Reembolso pago, rejeitado ou cancelado não pode ser editado.
+- Todo reembolso nasce com status `DRAFT`.
+- Apenas o colaborador dono do reembolso pode editar, cancelar, anexar comprovantes ou enviar um rascunho.
+- Apenas um usuário `MANAGER` pode aprovar ou rejeitar um reembolso com status `SUBMITTED`.
+- Apenas um usuário `FINANCIAL` pode marcar como pago um reembolso com status `APPROVED`.
+- Reembolsos `PAID`, `REJECTED` ou `CANCELED` não podem ser editados.
 
-## Estrutura
+## Estrutura do Projeto
 
 ```txt
 desafio-estagio-pitang/
@@ -118,16 +149,17 @@ desafio-estagio-pitang/
 |-- README.md
 ```
 
-## Como Rodar
+## Como Rodar o Projeto
 
 ### Pré-requisitos
 
 - Node.js instalado.
 - npm instalado.
+- Git instalado, caso queira versionar ou enviar o projeto para o GitHub.
 
-### Backend
+### 1. Rodar o Backend
 
-Entre na pasta:
+Entre na pasta do backend:
 
 ```bash
 cd backend
@@ -164,15 +196,15 @@ Inicie a API:
 npm run dev
 ```
 
-URL da API:
+Se tudo estiver correto, a API ficará disponível em:
 
 ```txt
 http://localhost:3000
 ```
 
-### Frontend
+### 2. Rodar o Frontend
 
-Em outro terminal:
+Abra outro terminal e entre na pasta do frontend:
 
 ```bash
 cd frontend
@@ -190,31 +222,31 @@ Inicie o Vite:
 npm run dev
 ```
 
-URL do frontend:
+Acesse a URL exibida no terminal, por exemplo:
 
 ```txt
 http://localhost:5173
 ```
 
-Se a porta `5173` estiver ocupada, o Vite pode usar outra porta, como `5174`.
+Importante: o frontend precisa que o backend esteja rodando. Se o backend estiver desligado, ações como login, cadastro e criação de reembolso vão falhar.
 
 ## Banco de Dados
 
-O projeto usa SQLite com Prisma.
+O projeto usa SQLite com Prisma. O SQLite foi escolhido por ser simples de configurar em ambiente local e não exigir instalação de um servidor de banco separado.
 
-Schema:
+Schema principal:
 
 [backend/prisma/schema.prisma](backend/prisma/schema.prisma)
 
 Modelos principais:
 
-| Model | Descrição |
+| Model | Responsabilidade |
 | --- | --- |
-| `User` | Usuários do sistema |
-| `Category` | Categorias de despesa |
-| `Reimbursement` | Solicitações de reembolso |
-| `Attachment` | Anexos simulados |
-| `ReimbursementHistory` | Histórico de ações |
+| `User` | Armazena usuários, senha criptografada e perfil |
+| `Category` | Armazena categorias de despesas |
+| `Reimbursement` | Armazena solicitações de reembolso |
+| `Attachment` | Armazena metadados dos anexos simulados |
+| `ReimbursementHistory` | Registra o histórico de ações feitas no reembolso |
 
 Enums:
 
@@ -226,18 +258,20 @@ HistoryAction: CREATED, UPDATED, SUBMITTED, APPROVED, REJECTED, PAID, CANCELED, 
 
 ## Backend
 
+O backend concentra as regras de negócio da aplicação. Ele recebe as requisições HTTP, valida os dados, verifica permissões, conversa com o banco de dados e devolve respostas padronizadas.
+
 Arquivos principais:
 
 | Caminho | Responsabilidade |
 | --- | --- |
 | [backend/src/server.ts](backend/src/server.ts) | Inicializa o servidor HTTP |
-| [backend/src/app.ts](backend/src/app.ts) | Configura Express, JSON, rotas e error handler |
-| [backend/src/lib/prisma.ts](backend/src/lib/prisma.ts) | Configura e exporta Prisma Client com adapter SQLite |
-| [backend/src/errors/app-error.ts](backend/src/errors/app-error.ts) | Classe de erro padronizada |
-| [backend/src/middlewares/auth.middleware.ts](backend/src/middlewares/auth.middleware.ts) | Valida JWT e popula `req.user` |
-| [backend/src/middlewares/require.role.ts](backend/src/middlewares/require.role.ts) | Bloqueia rotas por perfil |
-| [backend/src/middlewares/error-handler.ts](backend/src/middlewares/error-handler.ts) | Padroniza respostas de erro |
-| [backend/src/types/express.d.ts](backend/src/types/express.d.ts) | Tipagem de `req.user` |
+| [backend/src/app.ts](backend/src/app.ts) | Configura Express, JSON, rotas e tratamento de erros |
+| [backend/src/lib/prisma.ts](backend/src/lib/prisma.ts) | Configura e exporta o Prisma Client com adapter SQLite |
+| [backend/src/errors/app-error.ts](backend/src/errors/app-error.ts) | Classe usada para lançar erros HTTP controlados |
+| [backend/src/middlewares/auth.middleware.ts](backend/src/middlewares/auth.middleware.ts) | Valida o JWT e adiciona os dados do usuário em `req.user` |
+| [backend/src/middlewares/require.role.ts](backend/src/middlewares/require.role.ts) | Restringe rotas de acordo com o perfil do usuário |
+| [backend/src/middlewares/error-handler.ts](backend/src/middlewares/error-handler.ts) | Converte erros em respostas HTTP padronizadas |
+| [backend/src/types/express.d.ts](backend/src/types/express.d.ts) | Adiciona a tipagem de `req.user` ao Express |
 
 Rotas:
 
@@ -245,18 +279,18 @@ Rotas:
 | --- | --- |
 | [backend/src/routes/users.routes.ts](backend/src/routes/users.routes.ts) | Cadastro e listagem de usuários |
 | [backend/src/routes/auth.routes.ts](backend/src/routes/auth.routes.ts) | Login e geração de token |
-| [backend/src/routes/categories.routes.ts](backend/src/routes/categories.routes.ts) | Categorias |
-| [backend/src/routes/reimbursements.routes.ts](backend/src/routes/reimbursements.routes.ts) | Fluxo de reembolsos |
+| [backend/src/routes/categories.routes.ts](backend/src/routes/categories.routes.ts) | CRUD de categorias |
+| [backend/src/routes/reimbursements.routes.ts](backend/src/routes/reimbursements.routes.ts) | Fluxo completo de reembolsos |
 
 Schemas Zod:
 
-| Caminho | Valida |
+| Caminho | Validação |
 | --- | --- |
-| [backend/src/schemas/user.schema.ts](backend/src/schemas/user.schema.ts) | Cadastro de usuário |
-| [backend/src/schemas/auth.schema.ts](backend/src/schemas/auth.schema.ts) | Login |
-| [backend/src/schemas/category.schema.ts](backend/src/schemas/category.schema.ts) | Categorias |
-| [backend/src/schemas/reimbursement.schema.ts](backend/src/schemas/reimbursement.schema.ts) | Reembolsos |
-| [backend/src/schemas/attachment.schema.ts](backend/src/schemas/attachment.schema.ts) | Anexos |
+| [backend/src/schemas/user.schema.ts](backend/src/schemas/user.schema.ts) | Dados de cadastro de usuário |
+| [backend/src/schemas/auth.schema.ts](backend/src/schemas/auth.schema.ts) | Dados de login |
+| [backend/src/schemas/category.schema.ts](backend/src/schemas/category.schema.ts) | Dados de categoria |
+| [backend/src/schemas/reimbursement.schema.ts](backend/src/schemas/reimbursement.schema.ts) | Dados de reembolso |
+| [backend/src/schemas/attachment.schema.ts](backend/src/schemas/attachment.schema.ts) | Dados de anexo simulado |
 
 ## Rotas da API
 
@@ -264,8 +298,8 @@ Schemas Zod:
 
 | Método | Rota | Acesso | Descrição |
 | --- | --- | --- | --- |
-| `POST` | `/users` | Público | Cria usuário |
-| `GET` | `/users` | `ADMIN` | Lista usuários |
+| `POST` | `/users` | Público | Cria um usuário |
+| `GET` | `/users` | `ADMIN` | Lista usuários cadastrados |
 
 ### Autenticação
 
@@ -286,21 +320,23 @@ Schemas Zod:
 
 | Método | Rota | Acesso | Descrição |
 | --- | --- | --- | --- |
-| `GET` | `/reimbursements` | Autenticado | Lista reembolsos conforme perfil |
+| `GET` | `/reimbursements` | Autenticado | Lista reembolsos conforme o perfil |
 | `POST` | `/reimbursements` | `EMPLOYEE` | Cria reembolso em rascunho |
-| `GET` | `/reimbursements/:id` | Autenticado com permissão | Detalha reembolso |
-| `PUT` | `/reimbursements/:id` | Dono `EMPLOYEE` e `DRAFT` | Edita reembolso |
-| `DELETE` | `/reimbursements/:id` | Dono `EMPLOYEE` e `DRAFT` | Cancela rascunho |
+| `GET` | `/reimbursements/:id` | Autenticado com permissão | Detalha um reembolso |
+| `PUT` | `/reimbursements/:id` | Dono `EMPLOYEE` e `DRAFT` | Edita um rascunho |
+| `DELETE` | `/reimbursements/:id` | Dono `EMPLOYEE` e `DRAFT` | Cancela um rascunho |
 | `POST` | `/reimbursements/:id/submit` | Dono `EMPLOYEE` e `DRAFT` | Envia para aprovação |
-| `POST` | `/reimbursements/:id/approve` | `MANAGER` e `SUBMITTED` | Aprova |
+| `POST` | `/reimbursements/:id/approve` | `MANAGER` e `SUBMITTED` | Aprova reembolso |
 | `POST` | `/reimbursements/:id/reject` | `MANAGER` e `SUBMITTED` | Rejeita com justificativa |
 | `POST` | `/reimbursements/:id/pay` | `FINANCIAL` e `APPROVED` | Marca como pago |
-| `POST` | `/reimbursements/:id/cancel` | Dono `EMPLOYEE` e `DRAFT` | Cancela rascunho |
+| `POST` | `/reimbursements/:id/cancel` | Dono `EMPLOYEE` e `DRAFT` | Cancela um rascunho |
 | `POST` | `/reimbursements/:id/attachments` | Dono `EMPLOYEE` e `DRAFT` | Adiciona anexo simulado |
 | `GET` | `/reimbursements/:id/attachments` | Autenticado com permissão | Lista anexos |
 | `GET` | `/reimbursements/:id/history` | Autenticado com permissão | Lista histórico |
 
 ## Frontend
+
+O frontend é a interface usada pelo usuário para interagir com a API. Ele controla o login, guarda o token JWT no navegador e exibe as telas de acordo com o perfil do usuário.
 
 Rotas React:
 
@@ -321,15 +357,15 @@ Arquivos principais:
 | --- | --- |
 | [frontend/app/main.tsx](frontend/app/main.tsx) | Entrada React e configuração de rotas |
 | [frontend/app/auth.context.tsx](frontend/app/auth.context.tsx) | Context API de autenticação |
-| [frontend/app/lib/api.ts](frontend/app/lib/api.ts) | Cliente HTTP para API |
-| [frontend/app/lib/types.ts](frontend/app/lib/types.ts) | Tipos compartilhados no frontend |
-| [frontend/app/components/layout.tsx](frontend/app/components/layout.tsx) | Layout protegido |
+| [frontend/app/lib/api.ts](frontend/app/lib/api.ts) | Cliente HTTP usado para chamar a API |
+| [frontend/app/lib/types.ts](frontend/app/lib/types.ts) | Tipos usados no frontend |
+| [frontend/app/components/layout.tsx](frontend/app/components/layout.tsx) | Layout das páginas protegidas |
 | [frontend/app/components/sidebar.tsx](frontend/app/components/sidebar.tsx) | Menu lateral |
 | [frontend/app/components/header.tsx](frontend/app/components/header.tsx) | Cabeçalho do usuário |
-| [frontend/app/components/pitang.logo.tsx](frontend/app/components/pitang.logo.tsx) | Logo da Pitang |
-| [frontend/app/components/status.badge.tsx](frontend/app/components/status.badge.tsx) | Badge de status |
+| [frontend/app/components/pitang.logo.tsx](frontend/app/components/pitang.logo.tsx) | Componente da logo da Pitang |
+| [frontend/app/components/status.badge.tsx](frontend/app/components/status.badge.tsx) | Badge visual para status de reembolso |
 
-O frontend chama a API por `/api`. O proxy está configurado em:
+O frontend chama a API usando `/api`. O proxy do Vite redireciona essas chamadas para o backend:
 
 [frontend/vite.config.ts](frontend/vite.config.ts)
 
@@ -337,20 +373,24 @@ O frontend chama a API por `/api`. O proxy está configurado em:
 "/api" -> "http://localhost:3000"
 ```
 
+Isso permite que o frontend faça chamadas como `/api/users`, enquanto o Vite encaminha para `http://localhost:3000/users`.
+
 ## Collection do Postman
 
-A Collection está em:
+A collection está em:
 
 [docs/postman/Pitang-estagio-API.postman_collection.json](docs/postman/Pitang-estagio-API.postman_collection.json)
 
-Ela contém:
+Ela foi criada para testar manualmente os principais cenários da API:
 
-- fluxo principal da API;
 - criação e login dos perfis;
 - criação de categorias;
-- criação, envio, aprovação e pagamento de reembolsos;
+- criação de reembolsos;
+- envio para aprovação;
+- aprovação por gestor;
+- pagamento por financeiro;
 - anexos simulados;
-- histórico;
+- consulta de histórico;
 - testes negativos de autenticação, permissão, validação, status inválido e recurso inexistente.
 
 ## Testes Automatizados
@@ -359,14 +399,14 @@ Os testes de integração ficam em:
 
 [backend/src/tests/reimbursements-flow.test.ts](backend/src/tests/reimbursements-flow.test.ts)
 
-Rodar:
+Para rodar:
 
 ```bash
 cd backend
 npm test
 ```
 
-Cobertura atual:
+Os testes cobrem:
 
 - fluxo completo de reembolso;
 - criação de usuários;
@@ -378,7 +418,7 @@ Cobertura atual:
 - bloqueio de ações sem permissão;
 - bloqueio de transições inválidas;
 - soft delete de categoria;
-- delete/cancelamento de rascunho.
+- cancelamento de rascunho.
 
 ## Scripts
 
@@ -386,25 +426,25 @@ Cobertura atual:
 
 | Comando | Descrição |
 | --- | --- |
-| `npm run dev` | Inicia a API |
-| `npm test` | Executa testes |
-| `npm run prisma:generate` | Gera Prisma Client |
-| `npm run prisma:migrate` | Executa migrations |
-| `npm run prisma:studio` | Abre Prisma Studio |
+| `npm run dev` | Inicia a API em modo desenvolvimento |
+| `npm test` | Executa os testes automatizados |
+| `npm run prisma:generate` | Gera o Prisma Client |
+| `npm run prisma:migrate` | Executa as migrations |
+| `npm run prisma:studio` | Abre o Prisma Studio |
 
 ### Frontend
 
 | Comando | Descrição |
 | --- | --- |
-| `npm run dev` | Inicia Vite |
-| `npm run build` | Gera build de produção |
-| `npm run preview` | Visualiza build |
+| `npm run dev` | Inicia o Vite em modo desenvolvimento |
+| `npm run build` | Gera o build de produção |
+| `npm run preview` | Visualiza o build localmente |
 
 ## Decisões Técnicas
 
 ### Código em inglês
 
-Entidades, enums, rotas e campos foram mantidos em inglês para seguir o padrão das bibliotecas e da documentação técnica.
+Entidades, enums, rotas e campos foram mantidos em inglês para seguir o padrão comum em projetos com TypeScript, Prisma e APIs REST.
 
 Exemplos:
 
@@ -420,28 +460,42 @@ Exemplos:
 
 ### `Reimbursement` em vez de `Request`
 
-O nome `Request` foi evitado para não confundir com `Request` do Express.
+O nome `Request` foi evitado para não confundir com o tipo `Request` do Express.
+
+### Validação com Zod
+
+O Zod valida os dados recebidos nas rotas antes que eles sejam usados pela regra de negócio. Isso evita salvar dados inválidos no banco e ajuda a retornar mensagens de erro mais claras.
 
 ### Senhas com hash
 
-Senhas são salvas com `bcrypt.hash` e verificadas com `bcrypt.compare`. A senha nunca é retornada nas respostas da API.
+As senhas são salvas usando `bcrypt.hash` e verificadas com `bcrypt.compare`. A senha original nunca é salva diretamente e também nunca é retornada nas respostas da API.
+
+### Autenticação com JWT
+
+Após o login, a API retorna um token JWT. Esse token é enviado nas próximas requisições autenticadas pelo header:
+
+```txt
+Authorization: Bearer TOKEN_AQUI
+```
 
 ### Delete como soft delete
 
-O projeto evita apagar dados importantes fisicamente:
+O projeto evita apagar fisicamente dados importantes:
 
 - `DELETE /categories/:id` atualiza `isActive` para `false`;
 - `DELETE /reimbursements/:id` muda o status para `CANCELED`.
 
-Essa abordagem preserva histórico e auditoria.
+Essa abordagem preserva histórico e facilita auditoria.
 
 ### Anexos simulados
 
-O sistema não faz upload real de arquivos. Ele salva metadados:
+O sistema não faz upload real de arquivos. Ele salva apenas metadados:
 
 - `fileName`;
 - `fileUrl`;
 - `fileType`.
+
+Isso permite testar o fluxo de anexos sem depender de armazenamento externo.
 
 ## Checklist de Entrega
 
@@ -460,11 +514,12 @@ npm run build
 Confira também:
 
 - backend inicia em `http://localhost:3000`;
-- frontend inicia em `http://localhost:5173`;
-- Collection do Postman está em `docs/postman`;
+- frontend inicia em uma porta do Vite, como `http://localhost:5173`;
+- collection do Postman está em `docs/postman`;
 - README está atualizado;
 - fluxo principal funciona no frontend;
-- testes negativos principais passam no Postman.
+- testes negativos principais passam no Postman;
+- arquivos locais como `.env`, `dev.db`, `node_modules` e `dist` não estão sendo enviados para o Git.
 
 ## Melhorias Futuras
 
@@ -476,4 +531,3 @@ Confira também:
 - Confirmação visual antes de cancelar.
 - Testes automatizados do frontend.
 - Deploy.
-
